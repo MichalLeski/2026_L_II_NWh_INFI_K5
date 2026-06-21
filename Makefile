@@ -8,10 +8,10 @@ lint:
 run:
 	python main.py
 
-.PHONY: lint test docker_build docker_run
-
 test: lint
 	PYTHONPATH=. pytest --verbose -s
+
+.PHONY: lint test docker_build docker_run docker_push run deps
 
 docker_build:
 	docker build -t hello-world-printer .
@@ -21,11 +21,11 @@ docker_run: docker_build
 		--name hello-world-printer-dev \
 		-p 5000:5000 \
 		-d hello-world-printer
-		
-TAG=$(USERNAME)/hello-world-printer-k7-2026 
+
+TAG=$(USERNAME)/hello-world-printer-k7-2026
+
 docker_push: docker_build
 	@echo "$$DOCKER_PASSWORD" | docker login --username $(USERNAME) --password-stdin; \
-	docker tag hello-world-printer-k7-2026 $(TAG); \
+	docker tag hello-world-printer $(TAG); \
 	docker push $(TAG); \
 	docker logout;
- 
